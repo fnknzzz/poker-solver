@@ -1,6 +1,4 @@
-import calc from "./calc";
+import calc from './calc'
+import defaultHand from './constants'
 
-const playerA = "778899JQQQKKK2";
-const playerB = "TTAA";
-
-console.log(calc(playerA, playerB));
+console.log(calc(defaultHand))
