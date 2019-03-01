@@ -1,11 +1,12 @@
-import { hand } from './constants'
 import { normalize } from './serialize'
 
+export type hand = Array<[number, number]>
 export interface INode {
   first: hand
   second: hand
   last: [number, number] | null
   children: INode[]
+  firstWin?: boolean
 }
 
 const deleteIndex = <T>(arr: T[], n: number, item?: T) => {

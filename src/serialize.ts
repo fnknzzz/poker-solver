@@ -1,4 +1,4 @@
-import { hand } from './constants'
+import { hand } from './generateTree'
 
 const levelMap: { [key: string]: number } = {
   '3': 0,
