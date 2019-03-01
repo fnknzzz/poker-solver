@@ -1,4 +1,6 @@
-import calc from './calc'
-import defaultHand from './constants'
+import { defaultHand } from './constants'
+import { generateTree } from './generateTree';
 
-console.log(calc(defaultHand))
+const node = generateTree(defaultHand.A, defaultHand.B)
+
+console.log(node)

@@ -1,59 +1,59 @@
-type poker = '7' | '8' | '9' | 'T' | 'J' | 'Q' | 'K' | 'A' | '2'
+import { hand } from './constants'
 
-export interface ISerialize {
-  A: string
-  B: string
+const levelMap: { [key: string]: number } = {
+  '3': 0,
+  '4': 1,
+  '5': 2,
+  '6': 3,
+  '7': 4,
+  '8': 5,
+  '9': 6,
+  T: 7,
+  J: 8,
+  Q: 9,
+  K: 10,
+  A: 11,
+  '2': 12
 }
 
-const poker2Order = (p: poker): number => {
-  switch (p) {
-    case 'T':
-      return 3
-    case 'J':
-      return 4
-    case 'Q':
-      return 5
-    case 'K':
-      return 6
-    case 'A':
-      return 7
-    case '2':
-      return 8
-    default:
-      return parseInt(p, 10) - 7
-  }
-}
+export type poker = keyof typeof levelMap
 
-export default function(A: string, B: string): ISerialize {
-  const sA = (A.split('') as poker[]).map(poker2Order)
-  const sB = (B.split('') as poker[]).map(poker2Order)
-  const a: boolean[] = new Array(9)
-  const unreach: number[] = []
-  sA.forEach(k => {
-    a[k] = true
-  })
-  sB.forEach(k => {
-    a[k] = true
-  })
-  for (let i = 0; i < 9; i++) {
-    if (!a[i]) {
-      unreach.push(i)
-    }
-  }
-  unreach.forEach((i, j) => {
-    for (let k = 0; k < sA.length; k++) {
-      if (sA[k] > i - j) {
-        sA[k]--
+export const normalize = (A: string, B: string) => {
+  const pA = A.split('').map(k => levelMap[k])
+  const pB = B.split('').map(k => levelMap[k])
+  const target = [...pA, ...pB]
+  const temp = new Array(Math.max(...target)).fill(false)
+  target.forEach(n => (temp[n] = true))
+  let level = 0
+  temp.forEach(k => {
+    if (!k) {
+      for (let i = 0; i < target.length; i++) {
+        if (target[i] > level) {
+          target[i]--
+        }
       }
+      level--
     }
-    for (let k = 0; k < sB.length; k++) {
-      if (sB[k] > i - j) {
-        sB[k]--
-      }
-    }
+    level++
   })
   return {
-    A: sA.join(''),
-    B: sB.join('')
+    A: string2Hand(target.slice(0, pA.length).join('')),
+    B: string2Hand(target.slice(pA.length).join(''))
   }
 }
+
+export const string2Hand = (k: string) => {
+  const result: hand = []
+  Array.prototype.forEach.call(k, (c: string) => {
+    const level = +c
+    if (!result.length || result[result.length - 1][0] !== level) {
+      result.push([level, 1])
+    } else {
+      result[result.length - 1][1]++
+    }
+  })
+  return result
+}
+
+export const hand2String = (k: hand) =>
+  k.map(([level, n]) => ('' + level).repeat(n)).join('')

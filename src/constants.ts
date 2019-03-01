@@ -1,9 +1,6 @@
-const defaultHand = {
+export const defaultHand = {
   A: '778899JQQQKKK2',
   B: 'TTAA'
 }
 
-type hand = typeof defaultHand
-
-export { hand }
-export default defaultHand
+export type hand = Array<[number, number]>
