@@ -2,6 +2,8 @@ import filesize from 'filesize'
 import readline from 'readline'
 import { Adapter } from './v1'
 
+export { Adapter }
+
 export interface IEventListener {
   StartEvalute(): void
   EndEvalute(): void
@@ -14,13 +16,11 @@ export interface IAdapter {
   getFirstPlayText(): string
 }
 
-const defaultHand = {
-  A: '8899JQQQ2',
-  // A: '778899JQQQKKK2',
-  B: 'TTAA'
-}
+const A = '8899JKKK2'
+// const A = '778899JQQQKKK2'
+const B = 'TTAA'
 
-const adapter: Adapter = new Adapter(defaultHand.A, defaultHand.B, {
+const adapter: Adapter = new Adapter(A, B, {
   StartEvalute: () => console.time('所用时间'),
   EndEvalute: () => console.timeEnd('所用时间')
 })
