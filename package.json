@@ -5,12 +5,13 @@
   "main": "./dist/index.js",
   "scripts": {
     "test": "jest",
-    "start": "tsc && node ./dist/index.js",
+    "start": "tsc && node --max_old_space_size=99000 ./dist/index.js",
     "build": "rm -rf ./dist && tsc"
   },
   "author": "fnknzzz",
   "license": "ISC",
   "devDependencies": {
+    "@types/filesize": "^4.0.1",
     "@types/jest": "^24.0.0",
     "@types/node": "^10.12.24",
     "jest": "^24.1.0",
@@ -24,5 +25,8 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fnknzzz/poker-resolver"
+  },
+  "dependencies": {
+    "filesize": "^4.1.2"
   }
 }

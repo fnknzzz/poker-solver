@@ -1,4 +1,4 @@
-import { normalize } from './serialize'
+import { normalize } from '../serialize'
 
 export type hand = Array<[number, number]>
 export interface INode {
@@ -9,7 +9,7 @@ export interface INode {
   firstWin?: boolean
 }
 
-const deleteIndex = <T>(arr: T[], n: number, item?: T) => {
+export const deleteIndex = <T>(arr: T[], n: number, item?: T) => {
   const copy = arr.slice()
   if (item) {
     copy.splice(n, 1, item)
@@ -50,16 +50,28 @@ const findChildren = (node: INode) => {
         })
       }
     })
-    if (!node.children.length) {
-      node.children.push({
-        first: node.first,
-        second: node.second,
-        last: null,
-        children: []
-      })
-    }
+    node.children.push({
+      first: node.second,
+      second: node.first,
+      last: null,
+      children: []
+    })
   }
   node.children.forEach(child => findChildren(child))
+}
+
+const markNodeWinner = (node: INode) => {
+  if (!node.first.length) {
+    node.firstWin = true
+    return
+  } else if (!node.second.length) {
+    node.firstWin = false
+    return
+  }
+  for (const child of node.children) {
+    markNodeWinner(child)
+  }
+  node.firstWin = node.children.some(k => !k.firstWin)
 }
 
 export const generateTree = (sA: string, sB: string) => {
@@ -71,5 +83,6 @@ export const generateTree = (sA: string, sB: string) => {
     children: []
   }
   findChildren(rootNode)
+  markNodeWinner(rootNode)
   return rootNode
 }
