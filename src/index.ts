@@ -1,6 +1,6 @@
 import filesize from 'filesize'
 import readline from 'readline'
-import { Adapter } from './v1'
+import { Adapter } from './v2'
 
 export { Adapter }
 
