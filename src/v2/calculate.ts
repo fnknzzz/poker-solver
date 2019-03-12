@@ -1,4 +1,4 @@
-import { normalize } from '../serialize'
+import { normalize } from '../utils/serialize'
 
 // const map: { [key: string]: boolean } = {}
 

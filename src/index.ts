@@ -1,6 +1,6 @@
 import filesize from 'filesize'
 import readline from 'readline'
-import { Adapter } from './v2'
+import { Adapter } from './v3'
 
 export { Adapter }
 
@@ -16,8 +16,8 @@ export interface IAdapter {
   getFirstPlayText(): string
 }
 
-const A = '8899JKKK2'
-// const A = '778899JQQQKKK2'
+// const A = '8899JKKK2'
+const A = '778899JQQQKKK2'
 const B = 'TTAA'
 
 const adapter: Adapter = new Adapter(A, B, {
