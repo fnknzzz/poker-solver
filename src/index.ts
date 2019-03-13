@@ -10,10 +10,8 @@ export interface IEventListener {
 }
 
 export interface IAdapter {
-  getOutputByInput(text: string): string | null
-  isGameOver(): boolean
+  [Symbol.iterator](): IterableIterator<string | null>
   getInfo(): [string, string]
-  getFirstPlayText(): string
 }
 
 // const A = '8899JKKK2'
@@ -24,8 +22,6 @@ const adapter: Adapter = new Adapter(A, B, {
   StartEvalute: () => console.time('所用时间'),
   EndEvalute: () => console.timeEnd('所用时间')
 })
-
-console.log('占用内存:', filesize(process.memoryUsage().rss))
 
 const logInfo = () => {
   const [A, B] = adapter.getInfo()
@@ -39,8 +35,10 @@ const rl = readline.createInterface({
   prompt: '你出牌吧>> '
 })
 
+console.log('占用内存:', filesize(process.memoryUsage().rss))
 logInfo()
-const startText = adapter.getFirstPlayText()
+const generator = adapter[Symbol.iterator]()
+const startText = generator.next().value
 if (startText) {
   console.log('先手赢, 我先你后')
   console.log('我出:', startText)
@@ -50,23 +48,24 @@ if (startText) {
 }
 rl.prompt()
 rl.on('line', line => {
-  const result = adapter.getOutputByInput(line)
-  if (result === null) {
+  const { value, done } = generator.next(line)
+  if (value === null) {
     console.log('Orz...输入错误哦，重试吧')
     rl.prompt()
     return
-  } else if (result) {
-    console.log('我出:', result)
+  } else if (value) {
+    console.log('我出:', value)
+    if (done) {
+      console.log('出完啦')
+      rl.close()
+      return
+    }
   } else {
+    console.log(value, value.length)
     console.log('我不出')
   }
   logInfo()
-  if (adapter.isGameOver()) {
-    console.log('出完啦')
-    rl.close()
-  } else {
-    rl.prompt()
-  }
+  rl.prompt()
 }).on('close', () => {
   console.log('\n')
 })

@@ -9,8 +9,13 @@ import {
   tupleStore
 } from './calculate'
 
+const isWin = (node: INode) => map[getKey(node)]
+
 export class Adapter implements IAdapter {
-  public node: INode
+  public readonly rootNode: INode
+  public readonly firstStr: string
+  public readonly secondStr: string
+  private node: INode
   private first: string[]
   private second: string[]
   private cpu: string[]
@@ -18,42 +23,47 @@ export class Adapter implements IAdapter {
 
   constructor(firstStr: string, secondStr: string, listeners: IEventListener) {
     listeners.StartEvalute()
-    this.node = calculate(firstStr, secondStr)
+    this.rootNode = calculate(firstStr, secondStr)
     listeners.EndEvalute()
-    this.first = firstStr.split('')
-    this.second = secondStr.split('')
-    this.cpu = this.node.firstWin ? this.first : this.second
-    this.human = this.node.firstWin ? this.second : this.first
+    this.firstStr = firstStr
+    this.secondStr = secondStr
+    this.node = this.rootNode
+    this.first = this.firstStr.split('')
+    this.second = this.secondStr.split('')
+    this.cpu = isWin(this.rootNode) ? this.first : this.second
+    this.human = isWin(this.rootNode) ? this.second : this.first
+  }
+
+  public *[Symbol.iterator]() {
+    let text: string
+    if (map[getKey(this.node)]) {
+      text = yield this.cpuPlay()
+    } else {
+      text = yield ''
+    }
+    while (true) {
+      text = text.trim().toUpperCase()
+      const nextNode = this.getNodeByText(text)
+      if (!nextNode) {
+        text = yield null
+        continue
+      }
+      this.updateHand(this.human, text)
+      this.node = nextNode
+      const playText = this.cpuPlay()
+      if (!this.cpu.length) {
+        return text
+      } else {
+        text = yield playText
+      }
+    }
   }
 
   public getInfo() {
     return [this.first.join(''), this.second.join('')] as [string, string]
   }
 
-  public getOutputByInput(text: string) {
-    text = text.trim().toUpperCase()
-
-    const nextNode = this.getNodeByText(text)
-    if (!nextNode) {
-      return null
-    }
-    this.updateHand(this.human, text)
-    this.node = nextNode
-    return this.getCpuPlayText()
-  }
-
-  public isGameOver() {
-    return !this.cpu.length
-  }
-
-  public getFirstPlayText() {
-    if (map[getKey(this.node)] === true) {
-      return this.getCpuPlayText()
-    }
-    return ''
-  }
-
-  private getCpuPlayText() {
+  private cpuPlay() {
     const children = getChildren(this.node)
     const nextNode = children.find(k => !map[getKey(k)])!
     const text = getDeltaText(
@@ -95,6 +105,7 @@ export class Adapter implements IAdapter {
   }
 
   private updateHand(player: string[], text: string) {
+    if (!text.length) return
     const point = text[0]
     const index = player.indexOf(point)
     player.splice(index, text.length)

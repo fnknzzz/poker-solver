@@ -1,3 +1,4 @@
+import { deleteIndex, deleteItem } from '../utils'
 import { normalize } from '../utils/serialize'
 export const map: { [key: string]: boolean } = {}
 
@@ -11,26 +12,6 @@ export interface INode {
   last: hand | null
   firstWin?: boolean
   repeat: number[] | null
-}
-
-export const deleteIndex = <T>(arr: T[], n: number, item?: T) => {
-  const copy = arr.slice()
-  if (item) {
-    copy.splice(n, 1, item)
-  } else {
-    copy.splice(n, 1)
-  }
-  return copy
-}
-
-export const deleteItem = <T>(arr: T[], item: T) => {
-  const result: T[] = []
-  arr.forEach(k => {
-    if (k !== item) {
-      result.push(k)
-    }
-  })
-  return result
 }
 
 const playCard = (
@@ -115,7 +96,8 @@ export const getChildren = (node: INode) => {
   return result
 }
 
-export const getKey = (node: INode) => node.first.join('') + '/' + node.second.join('') + '/' + (node.last || '')
+export const getKey = (node: INode) =>
+  node.first.join('') + '/' + node.second.join('') + '/' + (node.last || '')
 
 const markNodeWinner = (node: INode) => {
   if (!node.first.length) {

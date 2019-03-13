@@ -20,3 +20,22 @@ export const getDeltaText = (child: INode, hand: string | string[]) => {
   }
   return hand.slice(index, index + length)
 }
+export const deleteIndex = <T>(arr: T[], index: number, item?: T) => {
+  const copy = arr.slice()
+  if (item) {
+    copy.splice(index, 1, item)
+  } else {
+    copy.splice(index, 1)
+  }
+  return copy
+}
+
+export const deleteItem = <T>(arr: T[], item: T) => {
+  const result: T[] = []
+  arr.forEach(k => {
+    if (k !== item) {
+      result.push(k)
+    }
+  })
+  return result
+}

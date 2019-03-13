@@ -18,6 +18,10 @@ export class Adapter implements IAdapter {
     this.human = this.node.firstWin ? this.second : this.first
   }
 
+  public *[Symbol.iterator]() {
+    yield '1'
+  }
+
   public getInfo() {
     return [this.first.join(''), this.second.join('')] as [string, string]
   }
