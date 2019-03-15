@@ -52,7 +52,7 @@ export class Adapter implements IAdapter {
       this.node = nextNode
       const playText = this.cpuPlay()
       if (!this.cpu.length) {
-        return text
+        return playText
       } else {
         text = yield playText
       }

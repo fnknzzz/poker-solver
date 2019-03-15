@@ -61,7 +61,6 @@ rl.on('line', line => {
       return
     }
   } else {
-    console.log(value, value.length)
     console.log('我不出')
   }
   logInfo()

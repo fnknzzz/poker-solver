@@ -1,4 +1,4 @@
-import { normalize } from '../src/serialize'
+import { normalize } from '../src/utils/serialize'
 
 describe('序列化', () => {
   it('无空缺', () => {
