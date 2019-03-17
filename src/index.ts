@@ -15,8 +15,14 @@ export interface IAdapter {
 }
 
 // const A = '8899JKKK2'
-const A = '778899JQQQKKK2'
-const B = 'TTAA'
+// const A = '778899JQQQKKK2'
+// const B = 'TTAA'
+
+// const A = '346999JA'
+// const B = '34TKK2'
+
+const A = '2KKKQQQ997766553'
+const B = 'AAJJ'
 
 const adapter: Adapter = new Adapter(A, B, {
   StartEvalute: () => console.time('所用时间'),
