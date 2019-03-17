@@ -1,15 +1,15 @@
 import { IAdapter } from '../'
-import { getDeltaText } from '../utils'
+import { getDeltaText, levelMap, pokerName } from '../utils'
 import {
   calculate,
+  getCacheKey,
   getChildren,
-  getKey,
   INode,
   map,
   tupleStore
 } from './calculate'
 
-const isWin = (node: INode) => map[getKey(node)]
+const isWin = (node: INode) => map[getCacheKey(node)]
 
 export class Adapter implements IAdapter {
   public readonly rootNode: INode
@@ -27,6 +27,8 @@ export class Adapter implements IAdapter {
     decorator?: (calcProcedure: typeof calculate) => typeof calculate
   ) {
     const calculateFunc = decorator ? decorator(calculate) : calculate
+    firstStr = firstStr.split('').sort((a, b) => levelMap[a as pokerName] - levelMap[b as pokerName]).join('')
+    secondStr = secondStr.split('').sort((a, b) => levelMap[a as pokerName] - levelMap[b as pokerName]).join('')
     this.rootNode = calculateFunc(firstStr, secondStr)
     this.firstStr = firstStr
     this.secondStr = secondStr
@@ -39,7 +41,7 @@ export class Adapter implements IAdapter {
 
   public *[Symbol.iterator]() {
     let text: string
-    if (map[getKey(this.node)]) {
+    if (map[getCacheKey(this.node)]) {
       text = yield this.cpuPlay()
     } else {
       text = yield ''
@@ -68,7 +70,7 @@ export class Adapter implements IAdapter {
 
   private cpuPlay() {
     const children = getChildren(this.node)
-    const nextNode = children.find(k => !map[getKey(k)])!
+    const nextNode = children.find(k => !map[getCacheKey(k)])!
     const text = getDeltaText(
       {
         first: nextNode.first.map(k => tupleStore[k]),

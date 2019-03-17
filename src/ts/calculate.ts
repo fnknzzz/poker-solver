@@ -1,5 +1,5 @@
-import { deleteIndex, deleteItem } from '../utils'
-import { normalize, hand } from '../utils'
+import { deleteIndex, deleteItem, hand, normalize } from '../utils'
+
 export const map: { [key: string]: boolean } = {}
 
 export const tupleStore: { [key: string]: hand } = {}
@@ -22,7 +22,7 @@ const playCard = (
   if (n < total) {
     return {
       first: node.second,
-      second: deleteIndex(node.first, index, '' + point + (total - n)),
+      second: deleteIndex(node.first, index, getKeyFromTuple(point, total - n)),
       last: '' + point + n,
       repeat: node.repeat
     }
@@ -31,14 +31,14 @@ const playCard = (
       return {
         first: getReducedHand(node.second, point),
         second: getReducedHand(deleteIndex(node.first, index), point),
-        last: point - 1 + '' + n,
+        last: getKeyFromTuple(point - 1, n),
         repeat: getNextRepeat(node.repeat, point)
       }
     } else {
       return {
         first: node.second,
         second: deleteIndex(node.first, index),
-        last: '' + point + n,
+        last: getKeyFromTuple(point, n),
         repeat: deleteItem(node.repeat, point)
       }
     }
@@ -64,24 +64,24 @@ export const getNextRepeat = (
 export const getReducedHand = (hands: string[], p: number) =>
   hands.map(k => {
     const [point, num] = tupleStore[k]
-    return point > p ? point - 1 + '' + num : k
+    return point > p ? getKeyFromTuple(point - 1, num) : k
   })
 
 export const getChildren = (node: INode) => {
   const result: INode[] = []
   if (!node.last) {
     node.first.forEach((key, index) => {
-      const [poker, n] = tupleStore[key]
+      const [point, n] = tupleStore[key]
       for (let i = 1; i <= n; i++) {
-        result.push(playCard(node, poker, i, index))
+        result.push(playCard(node, point, i, index))
       }
     })
   } else {
     const [lastPoker, num] = tupleStore[node.last]
     node.first.forEach((key, index) => {
-      const [poker, n] = tupleStore[key]
-      if (poker > lastPoker && n >= num) {
-        result.push(playCard(node, poker, num, index))
+      const [point, n] = tupleStore[key]
+      if (point > lastPoker && n >= num) {
+        result.push(playCard(node, point, num, index))
       }
     })
     result.push({
@@ -94,8 +94,10 @@ export const getChildren = (node: INode) => {
   return result
 }
 
-export const getKey = (node: INode) =>
+export const getCacheKey = (node: INode) =>
   node.first.join('') + '/' + node.second.join('') + '/' + (node.last || '')
+
+const getKeyFromTuple = (point: number, num: number) => point.toString(16) + num
 
 const markNodeWinner = (node: INode) => {
   if (!node.first.length) {
@@ -103,7 +105,7 @@ const markNodeWinner = (node: INode) => {
   } else if (!node.second.length) {
     node.firstWin = false
   } else {
-    const key = getKey(node)
+    const key = getCacheKey(node)
     if (map[key] !== undefined) {
       node.firstWin = map[key]
       return
@@ -122,15 +124,19 @@ const markNodeWinner = (node: INode) => {
 }
 
 const initStore = (maxPoint: number, maxLen: number) => {
-  for (let i = -1; i <= maxPoint; i++) {
+  for (let i = 0; i <= maxPoint; i++) {
     for (let j = 1; j <= maxLen; j++) {
-      tupleStore['' + i + j] = [i, j]
+      tupleStore[getKeyFromTuple(i, j)] = [i, j]
     }
   }
 }
 
 export const calculate = (sA: string, sB: string) => {
   const [A, B] = normalize(sA, sB)
+  
+  // 留出 0 的空位，从 1 开始，防止重新标准化后出现 -1
+  A.forEach(k => k[0]++)
+  B.forEach(k => k[0]++)
   initStore(
     Math.max(A[A.length - 1][0], B[B.length - 1][0]),
     Math.max(...A.map(k => k[1]), ...B.map(k => k[1]))
@@ -143,8 +149,8 @@ export const calculate = (sA: string, sB: string) => {
     }
   })
   const rootNode: INode = {
-    first: A.map(([a, b]) => '' + a + b),
-    second: B.map(([a, b]) => '' + a + b),
+    first: A.map(([a, b]) => getKeyFromTuple(a, b)),
+    second: B.map(([a, b]) => getKeyFromTuple(a, b)),
     last: null,
     repeat: repeat.length ? repeat : null
   }
