@@ -1,4 +1,4 @@
-import { levelMap, pokerName, hand } from './type'
+import { hand, levelMap, pokerName } from './type'
 
 export const normalize = (...strs: string[]) => {
   if (!strs.length) return []
