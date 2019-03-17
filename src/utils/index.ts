@@ -39,3 +39,6 @@ export const deleteItem = <T>(arr: T[], item: T) => {
   })
   return result
 }
+
+export * from './normalize'
+export * from './type'

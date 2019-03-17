@@ -1,4 +1,4 @@
-import { normalize } from '../utils/serialize'
+import { normalize } from '../utils/normalize'
 
 export type hand = Array<[number, number]>
 export interface INode {

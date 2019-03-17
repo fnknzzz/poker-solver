@@ -1,5 +1,5 @@
 import { deleteIndex, deleteItem } from '../utils'
-import { normalize } from '../utils/serialize'
+import { normalize } from '../utils/normalize'
 export const map: { [key: string]: boolean } = {}
 
 export const tupleStore: { [key: string]: [number, number] } = {}
@@ -132,7 +132,7 @@ const initStore = (maxPoint: number, maxLen: number) => {
 }
 
 export const calculate = (sA: string, sB: string) => {
-  const { A, B } = normalize(sA, sB)
+  const [A, B] = normalize(sA, sB)
   initStore(
     Math.max(A[A.length - 1][0], B[B.length - 1][0]),
     Math.max(...A.map(k => k[1]), ...B.map(k => k[1]))
