@@ -1,15 +1,13 @@
 import { deleteIndex, deleteItem } from '../utils'
-import { normalize } from '../utils/normalize'
+import { normalize, hand } from '../utils'
 export const map: { [key: string]: boolean } = {}
 
-export const tupleStore: { [key: string]: [number, number] } = {}
-
-export type hand = keyof typeof tupleStore
+export const tupleStore: { [key: string]: hand } = {}
 
 export interface INode {
-  first: hand[]
-  second: hand[]
-  last: hand | null
+  first: string[]
+  second: string[]
+  last: string | null
   firstWin?: boolean
   repeat: number[] | null
 }
@@ -49,7 +47,7 @@ const playCard = (
 
 export const getNextRepeat = (
   repeat: INode['repeat'],
-  point: hand
+  point: number
 ): INode['repeat'] => {
   if (!repeat) return null
   const result = []
@@ -63,7 +61,7 @@ export const getNextRepeat = (
   return result.length ? result : null
 }
 
-export const getReducedHand = (hands: hand[], p: number) =>
+export const getReducedHand = (hands: string[], p: number) =>
   hands.map(k => {
     const [point, num] = tupleStore[k]
     return point > p ? point - 1 + '' + num : k

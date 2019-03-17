@@ -1,4 +1,4 @@
-export type hand = Array<[number, number]>
+export type hand = [number, number]
 
 export const levelMap = {
   '3': 0,

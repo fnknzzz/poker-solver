@@ -1,5 +1,4 @@
-import { hand } from '../v1/generateTree'
-import { levelMap, pokerName } from './type'
+import { levelMap, pokerName, hand } from './type'
 
 export const normalize = (...strs: string[]) => {
   if (!strs.length) return []
@@ -26,7 +25,7 @@ export const normalize = (...strs: string[]) => {
   }
   return strs.map((k, i) => {
     const points = target.slice(devideIndex[i], devideIndex[i + 1])
-    const result: hand = []
+    const result: hand[] = []
     points.forEach(level => {
       if (!result.length || result[result.length - 1][0] !== level) {
         result.push([level, 1])

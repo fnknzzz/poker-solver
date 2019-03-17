@@ -1,13 +1,8 @@
 import filesize from 'filesize'
 import readline from 'readline'
-import { Adapter } from './v3'
+import { Adapter } from './ts'
 
 export { Adapter }
-
-export interface IEventListener {
-  StartEvalute(): void
-  EndEvalute(): void
-}
 
 export interface IAdapter {
   [Symbol.iterator](): IterableIterator<string | null>
@@ -15,19 +10,26 @@ export interface IAdapter {
 }
 
 // const A = '8899JKKK2'
-// const A = '778899JQQQKKK2'
-// const B = 'TTAA'
+const A = '778899JQQQKKK2'
+const B = 'TTAA'
 
 // const A = '346999JA'
 // const B = '34TKK2'
 
-const A = '2KKKQQQ997766553'
-const B = 'AAJJ'
+// const A = '2KKKQQQ997766553'
+// const B = 'AAJJ'
 
-const adapter: Adapter = new Adapter(A, B, {
-  StartEvalute: () => console.time('所用时间'),
-  EndEvalute: () => console.timeEnd('所用时间')
-})
+const adapter: Adapter = new Adapter(
+  A,
+  B,
+  calc => (...args: Parameters<typeof calc>) => {
+    console.time('所用时间')
+    const result = calc(...args)
+    console.timeEnd('所用时间')
+    console.log('占用内存:', filesize(process.memoryUsage().rss))
+    return result
+  }
+)
 
 const logInfo = () => {
   const [A, B] = adapter.getInfo()
@@ -41,7 +43,6 @@ const rl = readline.createInterface({
   prompt: '你出牌吧>> '
 })
 
-console.log('占用内存:', filesize(process.memoryUsage().rss))
 logInfo()
 const generator = adapter[Symbol.iterator]()
 const startText = generator.next().value

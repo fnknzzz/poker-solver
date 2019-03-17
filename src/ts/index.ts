@@ -1,4 +1,4 @@
-import { IAdapter, IEventListener } from '../'
+import { IAdapter } from '../'
 import { getDeltaText } from '../utils'
 import {
   calculate,
@@ -21,10 +21,13 @@ export class Adapter implements IAdapter {
   private cpu: string[]
   private human: string[]
 
-  constructor(firstStr: string, secondStr: string, listeners: IEventListener) {
-    listeners.StartEvalute()
-    this.rootNode = calculate(firstStr, secondStr)
-    listeners.EndEvalute()
+  constructor(
+    firstStr: string,
+    secondStr: string,
+    decorator?: (calcProcedure: typeof calculate) => typeof calculate
+  ) {
+    const calculateFunc = decorator ? decorator(calculate) : calculate
+    this.rootNode = calculateFunc(firstStr, secondStr)
     this.firstStr = firstStr
     this.secondStr = secondStr
     this.node = this.rootNode

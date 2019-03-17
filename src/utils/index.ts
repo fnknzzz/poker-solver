@@ -1,7 +1,9 @@
+import { hand } from './type'
+
 interface INode {
-  first: Array<[number, number]>
-  second: Array<[number, number]>
-  last: [number, number] | null
+  first: hand[]
+  second: hand[]
+  last: hand | null
 }
 
 export const getDeltaText = (child: INode, hand: string | string[]) => {
@@ -20,6 +22,7 @@ export const getDeltaText = (child: INode, hand: string | string[]) => {
   }
   return hand.slice(index, index + length)
 }
+
 export const deleteIndex = <T>(arr: T[], index: number, item?: T) => {
   const copy = arr.slice()
   if (item) {
