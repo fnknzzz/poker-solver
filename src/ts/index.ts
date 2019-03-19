@@ -27,8 +27,14 @@ export class Adapter implements IAdapter {
     decorator?: (calcProcedure: typeof calculate) => typeof calculate
   ) {
     const calculateFunc = decorator ? decorator(calculate) : calculate
-    firstStr = firstStr.split('').sort((a, b) => levelMap[a as pokerName] - levelMap[b as pokerName]).join('')
-    secondStr = secondStr.split('').sort((a, b) => levelMap[a as pokerName] - levelMap[b as pokerName]).join('')
+    firstStr = firstStr
+      .split('')
+      .sort((a, b) => levelMap[a as pokerName] - levelMap[b as pokerName])
+      .join('')
+    secondStr = secondStr
+      .split('')
+      .sort((a, b) => levelMap[a as pokerName] - levelMap[b as pokerName])
+      .join('')
     this.rootNode = calculateFunc(firstStr, secondStr)
     this.firstStr = firstStr
     this.secondStr = secondStr
@@ -116,3 +122,5 @@ export class Adapter implements IAdapter {
     player.splice(index, text.length)
   }
 }
+
+export { calculate }
