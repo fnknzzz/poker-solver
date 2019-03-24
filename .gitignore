@@ -1,4 +1,6 @@
 .DS_Store
+
+# node
 node_modules
 coverage/
 dist/
@@ -6,3 +8,8 @@ dist/
 yarn.lock
 package-lock.json
 .cache
+
+# rust
+target/
+Cargo.lock
+*.rs.bk
