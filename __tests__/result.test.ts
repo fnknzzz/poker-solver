@@ -1,10 +1,10 @@
-import { Adapter } from '../src/ts'
+import { AdapterBase } from '../src/ts'
 
 const A = '778899JQQQKKK2'
 const B = 'TTAA'
 
 it('start', () => {
-  const adapter = new Adapter(A, B)
+  const adapter = new AdapterBase(A, B)
   const generator = adapter[Symbol.iterator]()
   const play = ['j', 'q', '7', '2', '7', 'K', '']
   const response = ['', '', 'T', '', 'T', 'A', 'A']

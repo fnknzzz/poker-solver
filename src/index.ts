@@ -1,40 +1,41 @@
 import filesize from 'filesize'
 import readline from 'readline'
-import { Adapter } from './ts'
+import { AdapterBase } from './ts'
 
-export { Adapter }
-
-export interface IAdapter {
+export interface AbstractAdapter {
   [Symbol.iterator](): IterableIterator<string | null>
+  calculate(): void
   getInfo(): [string, string]
 }
 
-// const A = '778899JQQQKKK2'
-// const B = 'TTAA'
+const A = '778899JQQQKKK2'
+const B = 'TTAA'
 
 // const A = '346999JA'
 // const B = '34TKK2'
 
-const A = '2KKKQQQ997766553'
-const B = 'AAJJ'
+// const A = '2KKKQQQ997766553'
+// const B = 'AAJJ'
 
-const adapter: Adapter = new Adapter(
-  A,
-  B,
-  calc => (...args: Parameters<typeof calc>) => {
+class Adaper extends AdapterBase {
+  constructor(A: string, B: string) {
+    super(A, B)
+  }
+  public logInfo() {
+    const [A, B] = super.getInfo()
+    console.log('    A:', A)
+    console.log('    B:', B)
+  }
+  public calculate() {
     console.time('所用时间')
-    const result = calc(...args)
+    const result = super.calculate()
     console.timeEnd('所用时间')
     console.log('占用内存:', filesize(process.memoryUsage().rss))
     return result
   }
-)
-
-const logInfo = () => {
-  const [A, B] = adapter.getInfo()
-  console.log('    A:', A)
-  console.log('    B:', B)
 }
+
+const adapter = new Adaper(A, B)
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -42,13 +43,13 @@ const rl = readline.createInterface({
   prompt: '你出牌吧>> '
 })
 
-logInfo()
+adapter.logInfo()
 const generator = adapter[Symbol.iterator]()
 const startText = generator.next().value
 if (startText) {
   console.log('先手赢, 我先你后')
   console.log('我出:', startText)
-  logInfo()
+  adapter.logInfo()
 } else {
   console.log('后手赢, 你先出吧')
 }
@@ -69,7 +70,7 @@ rl.on('line', line => {
   } else {
     console.log('我不出')
   }
-  logInfo()
+  adapter.logInfo()
   rl.prompt()
 }).on('close', () => {
   console.log('\n')

@@ -8,7 +8,7 @@ export interface INode {
   first: string[]
   second: string[]
   last: string | null
-  firstWin?: boolean
+  firstWin: boolean
   repeat: number[] | null
 }
 
@@ -24,7 +24,8 @@ const playCard = (
       first: node.second,
       second: deleteIndex(node.first, index, getKeyFromTuple(point, total - n)),
       last: '' + point + n,
-      repeat: node.repeat
+      repeat: node.repeat,
+      firstWin: false
     }
   } else {
     if (!node.repeat || !node.repeat.includes(point)) {
@@ -32,14 +33,16 @@ const playCard = (
         first: getReducedHand(node.second, point),
         second: getReducedHand(deleteIndex(node.first, index), point),
         last: getKeyFromTuple(point - 1, n),
-        repeat: getNextRepeat(node.repeat, point)
+        repeat: getNextRepeat(node.repeat, point),
+        firstWin: false
       }
     } else {
       return {
         first: node.second,
         second: deleteIndex(node.first, index),
         last: getKeyFromTuple(point, n),
-        repeat: deleteItem(node.repeat, point)
+        repeat: deleteItem(node.repeat, point),
+        firstWin: false
       }
     }
   }
@@ -88,7 +91,8 @@ export const getChildren = (node: INode) => {
       first: node.second,
       second: node.first,
       last: null,
-      repeat: node.repeat
+      repeat: node.repeat,
+      firstWin: false
     })
   }
   return result
@@ -152,7 +156,8 @@ export const calculate = (sA: string, sB: string) => {
     first: A.map(([a, b]) => getKeyFromTuple(a, b)),
     second: B.map(([a, b]) => getKeyFromTuple(a, b)),
     last: null,
-    repeat: repeat.length ? repeat : null
+    repeat: repeat.length ? repeat : null,
+    firstWin: false
   }
   markNodeWinner(rootNode)
   return rootNode

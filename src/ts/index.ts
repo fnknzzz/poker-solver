@@ -1,4 +1,4 @@
-import { IAdapter } from '../'
+import { AbstractAdapter } from '../'
 import { getDeltaText, levelMap, pokerName } from '../utils'
 import {
   calculate,
@@ -11,7 +11,7 @@ import {
 
 const isWin = (node: INode) => map[getCacheKey(node)]
 
-export class Adapter implements IAdapter {
+export class AdapterBase implements AbstractAdapter {
   public readonly rootNode: INode
   public readonly firstStr: string
   public readonly secondStr: string
@@ -21,12 +21,7 @@ export class Adapter implements IAdapter {
   private cpu: string[]
   private human: string[]
 
-  constructor(
-    firstStr: string,
-    secondStr: string,
-    decorator?: (calcProcedure: typeof calculate) => typeof calculate
-  ) {
-    const calculateFunc = decorator ? decorator(calculate) : calculate
+  public constructor(firstStr: string, secondStr: string) {
     firstStr = firstStr
       .split('')
       .sort((a, b) => levelMap[a as pokerName] - levelMap[b as pokerName])
@@ -35,9 +30,9 @@ export class Adapter implements IAdapter {
       .split('')
       .sort((a, b) => levelMap[a as pokerName] - levelMap[b as pokerName])
       .join('')
-    this.rootNode = calculateFunc(firstStr, secondStr)
     this.firstStr = firstStr
     this.secondStr = secondStr
+    this.rootNode = this.calculate()
     this.node = this.rootNode
     this.first = this.firstStr.split('')
     this.second = this.secondStr.split('')
@@ -72,6 +67,10 @@ export class Adapter implements IAdapter {
 
   public getInfo() {
     return [this.first.join(''), this.second.join('')] as [string, string]
+  }
+
+  public calculate() {
+    return calculate(this.firstStr, this.secondStr)
   }
 
   private cpuPlay() {
