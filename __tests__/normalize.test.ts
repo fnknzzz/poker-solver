@@ -1,3 +1,4 @@
+import { AdapterBase } from '../src/ts'
 import { normalize } from '../src/utils/normalize'
 
 describe('序列化', () => {
@@ -13,4 +14,11 @@ describe('序列化', () => {
       [[2, 2], [3, 2]]
     ])
   })
+})
+
+describe('cases', () => {
+  expect(new AdapterBase('5556', 'AA').rootNode.firstWin).toBe(true)
+  expect(new AdapterBase('778899JQQQKKK2', 'TTAA').rootNode.firstWin).toBe(
+    false
+  )
 })

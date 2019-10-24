@@ -137,7 +137,7 @@ const initStore = (maxPoint: number, maxLen: number) => {
 
 export const calculate = (sA: string, sB: string) => {
   const [A, B] = normalize(sA, sB)
-  
+
   // 留出 0 的空位，从 1 开始，防止重新标准化后出现 -1
   A.forEach(k => k[0]++)
   B.forEach(k => k[0]++)

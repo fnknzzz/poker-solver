@@ -10,7 +10,7 @@
     "benchmark": "tsc && node ./dist/benchmark/index.js"
   },
   "author": "fnknzzz",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/benchmark": "^1.0.31",
     "@types/filesize": "^4.1.0",

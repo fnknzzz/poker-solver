@@ -40,6 +40,7 @@ export class AdapterBase implements AbstractAdapter {
     this.human = isWin(this.rootNode) ? this.second : this.first
   }
 
+  // @ts-ignore
   public *[Symbol.iterator]() {
     let text: string
     if (map[getCacheKey(this.node)]) {
@@ -92,9 +93,6 @@ export class AdapterBase implements AbstractAdapter {
   }
 
   private getNodeByText(text: string) {
-    if (!Array.prototype.every.call(text, (k: string) => k === text[0])) {
-      return null
-    }
     const children = getChildren(this.node)
     if (!text) {
       return children.find(k => k.last === null)

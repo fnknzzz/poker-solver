@@ -1,4 +1,4 @@
-import Benchmark from 'benchmark'
+import Benchmark, { Event, Suite } from 'benchmark'
 import { calculate } from '../ts'
 import { cases } from './case'
 
@@ -8,10 +8,10 @@ suite
   .add('typescript', () => {
     calculate(cases[0], cases[1])
   })
-  .on('cycle', function(event: { target: any; }) {
+  .on('cycle', (event: Event) => {
     console.log(event.target.toString());
   })
-  .on('complete', function() {
+  .on('complete', function(this: Suite) {
     // @ts-ignore
     console.log(this.filter('fastest').map('name'))
   })

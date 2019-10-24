@@ -11,7 +11,20 @@ use utils::*;
 
 type Hand = (u32, u32);
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
+pub enum Winner {
+    First,
+    Second,
+}
+
+#[derive(Debug, PartialEq)]
+pub enum Output {
+    Invalid,
+    Normal(String),
+    Pass,
+}
+
+#[derive(Debug, Clone)]
 struct Node {
     first: Vec<Hand>,
     second: Vec<Hand>,
@@ -132,6 +145,7 @@ fn mark_winner(node: &mut Node, map: &mut HashMap<String, bool>) {
         return;
     }
     let cache_key = get_key(&node);
+
     if let Some(win) = map.get(&cache_key) {
         node.first_win = *win;
         return;
@@ -149,7 +163,7 @@ fn mark_winner(node: &mut Node, map: &mut HashMap<String, bool>) {
     map.insert(cache_key, node.first_win);
 }
 
-pub fn calculate(s1: &str, s2: &str) -> u32 {
+pub fn calculate(s1: &str, s2: &str) -> (Winner, Box<dyn FnMut(&str) -> (Output, String, String)>) {
     let (mut a, mut b) = normalize::normalize(s1, s2);
     for i in &mut a {
         i.0 += 1;
@@ -175,10 +189,105 @@ pub fn calculate(s1: &str, s2: &str) -> u32 {
         first_win: false,
     };
     mark_winner(&mut root_node, &mut map);
-    if root_node.first_win {
-        0u32
+    let first_win = root_node.first_win;
+    let mut first = true;
+    let (mut human, mut cpu) = if first_win {
+        (String::from(s2), String::from(s1))
     } else {
-        1u32
+        (String::from(s1), String::from(s2))
+    };
+    let mut current = root_node;
+    let output = Box::new(move |text: &str| {
+        fn get_output(node: &Node, hand: &String) -> Output {
+            if node.last == None {
+                return Output::Pass;
+            }
+            let mut i = 0u32;
+            let (point, num) = node.last.unwrap();
+            for &(p, n) in node.second.iter() {
+                if point > p {
+                    i = i + n;
+                } else {
+                    break;
+                };
+            }
+            let output_str: String = hand.chars().skip(i as usize).take(num as usize).collect();
+            Output::Normal(output_str)
+        }
+        fn get_next_hand(hand: &String, play: &Output) -> String {
+            let mut play_str = None;
+            if let Output::Normal(s) = play {
+                play_str = Some(s);
+            };
+            if play_str == None {
+                return hand.clone();
+            };
+            match play_str.unwrap().chars().nth(0) {
+                Some(c) => {
+                    let left: String = hand.chars().take_while(|&x| x != c).collect();
+                    let left_len = left.len();
+                    let right: String = hand
+                        .chars()
+                        .skip(left_len + play_str.unwrap().len())
+                        .collect();
+                    left + &right
+                }
+                None => hand.clone(),
+            }
+        }
+        let get_node_by_text = |play: &Output| {
+            let children = get_children(&current);
+            match play {
+                Output::Pass => children.into_iter().find(|node| node.last == None),
+                Output::Normal(text) => children
+                    .into_iter()
+                    .filter(|node| node.last != None)
+                    .find(|node| get_output(node, &human) == Output::Normal(text.clone())),
+                _ => panic!(""),
+            }
+        };
+        let get_cpu_next_node = |current: &Node| {
+            let children = get_children(current);
+            children
+                .into_iter()
+                .find(|x| x.second.len() == 0 || !(*map.get(&get_key(x)).unwrap()))
+                .unwrap()
+        };
+        let mut cpu_play = |current: &Node| {
+            let next_node = get_cpu_next_node(current);
+            let play = get_output(&next_node, &cpu);
+            cpu = get_next_hand(&cpu, &play);
+            (play, next_node)
+        };
+        if first {
+            first = false;
+            if first_win {
+                let (play, next_node) = cpu_play(&current);
+                current = next_node;
+                return (play, human.clone(), cpu.clone());
+            } else {
+                return (Output::Pass, human.clone(), cpu.clone());
+            }
+        };
+        let text = text.to_ascii_uppercase().trim().to_string();
+        let human_play = if text.len() == 0 {
+            Output::Pass
+        } else {
+            Output::Normal(text)
+        };
+        if let Some(next_human_node) = get_node_by_text(&human_play) {
+            human = get_next_hand(&human, &human_play);
+            let (play, next_cpu_node) = cpu_play(&next_human_node);
+            current = next_cpu_node;
+            (play, human.clone(), cpu.clone())
+        } else {
+            (Output::Invalid, human.clone(), cpu.clone())
+        }
+    });
+    if first_win {
+        (Winner::First, output)
+    } else {
+        (Winner::Second, output)
     }
 }
 
@@ -189,13 +298,23 @@ mod tests {
 
     #[test]
     fn it_works() {
-        assert_eq!(calculate("557", "66"), 0);
-        assert_eq!(calculate("346999JA", "34TKK2"), 1);
+        assert_eq!(calculate("557", "66").0, Winner::First);
+        assert_eq!(calculate("346999JA", "34TKK2").0, Winner::Second);
     }
 
     #[test]
     fn complex_case() {
-        assert_eq!(calculate("778899JQQQKKK2", "TTAA"), 1);
+        assert_eq!(calculate("778899JQQQKKK2", "TTAA").0, Winner::Second);
+    }
+
+    #[test]
+    #[ignore]
+    fn right_output() {
+        let (winner, mut output) = calculate("778899JQQQKKK2", "TTAA");
+        assert_eq!(winner, Winner::Second);
+        assert_eq!(output(&"").0, Output::Pass);
+        assert_eq!(output(&"77").0, Output::Normal("TT".into()));
+        assert_eq!(output(&"QQ").0, Output::Normal("AA".into()));
     }
 
     #[bench]
