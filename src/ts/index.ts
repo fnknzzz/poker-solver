@@ -40,7 +40,7 @@ export class AdapterBase implements AbstractAdapter {
     this.human = isWin(this.rootNode) ? this.second : this.first
   }
 
-  // @ts-ignore
+  // @ts-expect-error
   public *[Symbol.iterator]() {
     let text: string
     if (map[getCacheKey(this.node)]) {

@@ -9,10 +9,9 @@ suite
     calculate(cases[0], cases[1])
   })
   .on('cycle', (event: Event) => {
-    console.log(event.target.toString());
+    console.log(event.target.toString())
   })
   .on('complete', function(this: Suite) {
-    // @ts-ignore
     console.log(this.filter('fastest').map('name'))
   })
   .run({
