@@ -9,18 +9,13 @@
       "request": "launch",
       "name": "Debug unit tests in library 'poker'",
       "cargo": {
-        "args": [
-          "test",
-          "--no-run",
-          "--lib",
-          "--package=poker"
-        ],
+        "args": ["test", "--no-run", "--lib", "--package=poker"],
         "filter": {
           "name": "poker",
           "kind": "lib"
         }
       },
-      "args": [],
+      "args": ["it_works"],
       "cwd": "${workspaceFolder}"
     },
     {
@@ -28,12 +23,7 @@
       "request": "launch",
       "name": "Debug ignored unit tests in library 'poker'",
       "cargo": {
-        "args": [
-          "test",
-          "--no-run",
-          "--lib",
-          "--package=poker",
-        ],
+        "args": ["test", "--no-run", "--lib", "--package=poker"],
         "filter": {
           "name": "poker",
           "kind": "lib"
@@ -47,30 +37,21 @@
       "request": "launch",
       "name": "Debug executable 'poker'",
       "cargo": {
-        "args": [
-          "build",
-          "--bin=poker",
-          "--package=poker"
-        ],
+        "args": ["build", "--bin=poker", "--package=poker"],
         "filter": {
           "name": "poker",
           "kind": "bin"
         }
       },
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}"
     },
     {
       "type": "lldb",
       "request": "launch",
       "name": "Debug unit tests in executable 'poker'",
       "cargo": {
-        "args": [
-          "test",
-          "--no-run",
-          "--bin=poker",
-          "--package=poker"
-        ],
+        "args": ["test", "--no-run", "--bin=poker", "--package=poker"],
         "filter": {
           "name": "poker",
           "kind": "bin"
