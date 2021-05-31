@@ -165,7 +165,6 @@ pub fn calculate(s1: &str, s2: &str) -> (Winner, Box<dyn FnMut(&str) -> (Output,
     (String::from(s1), String::from(s2))
   };
   let mut current = root_node;
-  println!("{:?}", current);
   let output = Box::new(move |text: &str| {
     fn get_output(node: &Node, hand: &String) -> Output {
       match node.last {
@@ -240,7 +239,6 @@ pub fn calculate(s1: &str, s2: &str) -> (Winner, Box<dyn FnMut(&str) -> (Output,
       if first_win {
         let (play, next_node) = cpu_play(&current);
         current = next_node;
-        println!("{:?}", current);
         return (play, human.clone(), cpu.clone());
       } else {
         return (Output::Pass, human.clone(), cpu.clone());
@@ -253,12 +251,9 @@ pub fn calculate(s1: &str, s2: &str) -> (Winner, Box<dyn FnMut(&str) -> (Output,
       Output::Normal(text)
     };
     if let Some(next_human_node) = get_node_by_text(&human_play) {
-      println!("{:?}", next_human_node);
-
       human = get_next_hand(&human, &human_play);
       let (play, next_cpu_node) = cpu_play(&next_human_node);
       current = next_cpu_node;
-      println!("{:?}", current);
       (play, human.clone(), cpu.clone())
     } else {
       (Output::Invalid, human.clone(), cpu.clone())
