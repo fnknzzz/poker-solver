@@ -1,25 +1,19 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
-    "pretty": true,
-    "sourceMap": true,
     "target": "ESNext",
-    "module": "commonjs",
-    "esModuleInterop": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
     "strict": true,
-    "noUnusedLocals": true,
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["esnext"],
-    "plugins": [
-      {
-        "name": "typescript-tslint-plugin",
-        "configFile": "./tslint.json",
-        "disableNoUnusedVariableRule": true
-      }
-    ]
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react"
   },
-  "include": ["./src/**.ts", "src/**/**.ts"]
+  "include": ["./src"]
 }

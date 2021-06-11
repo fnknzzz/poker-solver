@@ -1,7 +1,0 @@
-[package]
-name = "poker"
-version = "0.1.0"
-authors = ["fk <820174048@qq.com>"]
-edition = "2018"
-
-[dependencies]
