@@ -9,5 +9,6 @@ export default defineConfig({
     ViteRsw({
       crates: ['poker-solver']
     })
-  ]
+  ],
+  base: 'poker-solver'
 })
