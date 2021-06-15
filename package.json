@@ -38,6 +38,7 @@
     "url": "git+https://github.com/fnknzzz/poker-solver"
   },
   "dependencies": {
+    "antd": "^4.16.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   }

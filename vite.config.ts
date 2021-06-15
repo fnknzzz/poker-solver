@@ -10,5 +10,12 @@ export default defineConfig({
       crates: ['poker-solver']
     })
   ],
-  base: 'poker-solver'
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true
+      }
+    }
+  },
+  base: '/poker-solver/'
 })
