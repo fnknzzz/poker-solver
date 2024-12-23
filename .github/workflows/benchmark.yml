@@ -22,7 +22,10 @@ jobs:
         toolchain: stable
         
     - name: Run benchmark
-      run: cargo bench -- --output-format bencher | tee output.txt
+      run: |
+        cargo bench | tee output.txt
+        # 确保输出文件存在
+        cat output.txt
       
     - name: Store benchmark result
       uses: benchmark-action/github-action-benchmark@v1
@@ -31,7 +34,8 @@ jobs:
         output-file-path: poker-solver/output.txt
         github-token: ${{ secrets.GITHUB_TOKEN }}
         auto-push: true
-        # 可选：添加警告阈值
         alert-threshold: '200%'
         comment-on-alert: true
-        fail-on-alert: true 
+        fail-on-alert: true
+        # 添加格式化设置
+        benchmark-data-dir-path: "bench"
