@@ -13,11 +13,14 @@ wee_alloc = { version = "0.4.2", optional = true }
 
 [dev-dependencies]
 wasm-bindgen-test = "0.2"
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "poker_benchmark"
+harness = false
 
 [profile.dev]
-# Tell `rustc` to optimize for small code size.
 opt-level = "s"
 
 [profile.release]
-# Tell `rustc` to optimize for small code size.
 opt-level = "s"

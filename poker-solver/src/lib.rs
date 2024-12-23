@@ -1,7 +1,3 @@
-#![feature(test)]
-
-extern crate test;
-
 pub mod level;
 pub mod utils;
 
@@ -9,10 +5,6 @@ use std::collections::HashMap;
 use std::fmt;
 use utils::*;
 use wasm_bindgen::prelude::*;
-
-// #[cfg(feature = "wee_alloc")]
-// #[global_allocator]
-// static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
 #[derive(Debug, PartialEq, Copy, Clone)]
@@ -297,7 +289,6 @@ pub fn calculate(s1: &str, s2: &str) -> Winner {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use test::Bencher;
 
   #[test]
   fn it_works() {
@@ -319,10 +310,5 @@ mod tests {
       last: Some(0b0001000000000000),
     };
     get_children(&node);
-  }
-
-  #[bench]
-  fn benchmark(b: &mut Bencher) {
-    b.iter(|| calculate("778899JQQQKKK2", "TTAA"));
   }
 }
